@@ -1,0 +1,50 @@
+html{
+	background:url(img/loginBg.png) #95c7ec;
+}
+body{
+	height:100%;
+}
+.login{
+	position: absolute;
+	top:50%;
+	left:50%;
+	margin-top:-210px;
+	margin-left:-500px;
+	width:1000px;
+	height:420px;
+}
+.login .login-form{
+	float: right;
+	width:360px;
+	height:420px;
+	background: #fff;
+}
+.login-form .el-radio-group{
+    margin-left:50px;
+    margin-bottom: 50px;
+}
+.login-form .el-form-item{
+   padding:0 30px;
+}
+.login-form .el-form-item--small.el-form-item{
+  margin-bottom: 30px;
+}
+.login-form .el-form-item--small .el-form-item__label{
+    line-height: 42px;
+}
+.login-form .el-input--small .el-input__inner{
+    height: 42px;
+    line-height: 42px;
+}
+.login-form .el-button--primary{
+    margin-top: 30px;
+    width: 100%;
+    color: #fff;
+    font-size: 16px;
+    border-radius: 50px;
+    background: #377ef1;
+    padding:12px 15px;
+}
+.formsubmit{
+    padding: 0 30px;
+}
