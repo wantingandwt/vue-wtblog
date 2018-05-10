@@ -13,6 +13,16 @@ body{
 	width:1000px;
 	height:420px;
 }
+.logo-img{
+    margin:50px 0;
+    text-align: center;
+}
+.logo-img img{
+    vertical-align: bottom;
+}
+.logo-img span{
+    font-size:30px;
+}
 .login .login-form{
 	float: right;
 	width:360px;

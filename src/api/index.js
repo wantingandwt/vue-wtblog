@@ -1,5 +1,5 @@
 // 配置API接口地址
-var root = '/static/'
+var root = '/'
 // 引用axios
 var axios = require('axios')
 // 自定义判断元素类型JS
@@ -48,14 +48,15 @@ function apiAxios (method, url, params, success, failure) {
         if (failure) {
           failure(res.data)
         } else {
-          window.alert('error: ' + JSON.stringify(res.data))
+          success(res.data)
+         // window.alert('error: ' + JSON.stringify(res.data))
         }
       }
     })
     .catch(function (err) {
       let res = err.response
       if (err) {
-        window.alert('api error, HTTP CODE: ' + res.status)
+       //window.alert('api error, HTTP CODE: ' + res.status)
       }
     })
 }
