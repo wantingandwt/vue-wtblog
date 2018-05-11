@@ -22,6 +22,7 @@ body{
 }
 .logo-img span{
     font-size:30px;
+    line-height: 60px;
 }
 .login .login-form{
 	float: right;
