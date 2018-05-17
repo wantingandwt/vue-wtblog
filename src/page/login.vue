@@ -50,7 +50,7 @@
                     message: '登录成功',
                     type: 'success'
                   }); 
-                  this.$router.push({ path: '/myarticle' });
+                  this.$router.push({ path: '/index' });
               }else{
                 this.$message({
                   message: '用户名或密码错误',
@@ -70,6 +70,6 @@
     }
   }
 </script>
-<style>
+<style scoped>
   @import "../style/login.css";
 </style>

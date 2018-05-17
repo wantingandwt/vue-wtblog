@@ -10,6 +10,7 @@
 
 <script>
 export default {
+    name:"articleclass",
     data() {
         return {
             tableData: [{

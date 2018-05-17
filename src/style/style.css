@@ -7,7 +7,12 @@ body {
     overflow-y: hidden;
     font-family: "microsoft yahei", Tahoma, Arial, Helvetica,Sans-serif;
 }
-
+a,a:hover{
+    text-decoration: none;
+}
+a{
+    color:#333;
+}
 #app {
     position: absolute;
     top: 0;
@@ -32,4 +37,7 @@ body {
 }
 .toolbar .el-form-item {
     margin-bottom: 10px;
+}
+.router-link-active{
+    color:#377ef1;
 }

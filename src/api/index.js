@@ -40,7 +40,7 @@ function apiAxios (method, url, params, success, failure) {
     withCredentials: false
   })
     .then(function (res) {
-      if (res.data.success === true) {
+      if (res.data.success === "true") {
         if (success) {
           success(res.data)
         }
@@ -48,8 +48,7 @@ function apiAxios (method, url, params, success, failure) {
         if (failure) {
           failure(res.data)
         } else {
-          success(res.data)
-         // window.alert('error: ' + JSON.stringify(res.data))
+          window.alert('error: ' + JSON.stringify(res.data))
         }
       }
     })
