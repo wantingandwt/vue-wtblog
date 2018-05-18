@@ -56,7 +56,7 @@ export default {
     components: {},
     data() {
         return {
-            sysName: 'hhhh',
+            sysName: '',
             sysUserName: '',
             collapsed: false
         }
