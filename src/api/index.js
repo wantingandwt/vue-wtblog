@@ -1,3 +1,4 @@
+import qs from 'qs'
 // 配置API接口地址
 var root = '/'
 // 引用axios
@@ -24,12 +25,14 @@ function filterNull (o) {
 }
 /*
   接口处理函数
-  另外，不同的项目的处理方法也是不一致的，这里出错就是简单的alert
 */
 
 function apiAxios (method, url, params, success, failure) {
   if (params) {
     params = filterNull(params)
+  }
+  if(method === 'POST'){
+    params =qs.stringify(params);
   }
   axios({
     method: method,
@@ -37,12 +40,15 @@ function apiAxios (method, url, params, success, failure) {
     data: method === 'POST' || method === 'PUT' ? params : null,
     params: method === 'GET' || method === 'DELETE' ? params : null,
     baseURL: root,
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+    },
     withCredentials: false
   })
     .then(function (res) {
       if (res.data.success === "true") {
-        if (success) {
-          success(res.data)
+        if (success) {        
+            success(res.data)
         }
       } else {
         if (failure) {

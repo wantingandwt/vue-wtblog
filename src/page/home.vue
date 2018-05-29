@@ -51,8 +51,9 @@
 </div>
 </template>
 
-<script>
+<script> 
 export default {
+    name:'home',
     components: {},
     data() {
         return {
@@ -180,5 +181,12 @@ export default {
 }
 .content-container strong{
     font-size:18px;
+}
+.breadcrumb-container{
+    border-bottom:1px solid #e7e7e7;
+    margin-bottom: 30px;
+}
+.grid-content .title{
+    margin-bottom: 20px;
 }
 </style>

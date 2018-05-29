@@ -20,6 +20,7 @@
 </template>
 <script>
   export default {
+    name:'login',
     data () {
       return {
         logining: '',
@@ -42,7 +43,7 @@
      submitForm(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {   
-            this.$api.get('/login', this.ruleForm, r => {
+            this.$api.post('/login',this.ruleForm, r => {
                this.logining = r.data.status;
               if (this.logining == "true"){
                 sessionStorage.setItem('user', JSON.stringify(this.ruleForm));//存储在web
@@ -70,6 +71,6 @@
     }
   }
 </script>
-<style scoped>
+<style>
   @import "../style/login.css";
 </style>

@@ -4,6 +4,7 @@ import login from '@/page/login'
 import home from '@/page/home.vue'
 
 import myarticle from '@/page/myarticle.vue'
+import articleadd from '@/page/articleadd.vue'
 import index from '@/page/index.vue'
 
 import articleclass from '@/page/articleclass.vue'
@@ -25,31 +26,31 @@ export default new Router({
       name: 'home',
 			children: [
 				{
-					path: 'index',
+					path: '/index',
 					component: index,
 					iconCls: 'el-icon-news',
 					name: '系统首页'
 				},
 					{
-						path: 'myarticle',
+						path: '/myarticle',
 						component: myarticle,
 						iconCls: 'el-icon-document',
-						name: '文章管理'
+						name: '文章管理',
 					},
 					{
-						path: 'articleclass',
+						path: '/articleclass',
 						component: articleclass,
 						name: '文章分类管理',
 						iconCls: 'el-icon-date',
 					},
 					{
-						path: 'banner',
+						path: '/banner',
 						component: banner,
 						name: '轮播图管理',
 						iconCls: 'el-icon-picture-outline',
 					},
 					{
-						path: 'system',
+						path: '/system',
 						component: system,
 						name: '基础信息',
 						iconCls: 'el-icon-setting',
