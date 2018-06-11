@@ -1,10 +1,43 @@
 <template lang="html">
   <div class="table-content">
-    <el-table :data="tableData" style="width: 100%">
-      <el-table-column prop="date" label="日期" width="180"></el-table-column>
-      <el-table-column prop="name" label="姓名" width="180"></el-table-column>
-      <el-table-column prop="address" label="地址"></el-table-column>
+    <el-form>
+        <el-button type="primary" >新增分类</el-button>
+        <el-button type="info">删除分类</el-button>
+    </el-form>
+     <el-table
+        ref="multipleTable"
+        :data="tableData"
+        tooltip-effect="dark"
+        stripe
+        style="width: 100%"
+        @selection-change="handleSelectionChange">
+        <el-table-column
+        type="selection"
+        width="55">
+        </el-table-column>
+        <el-table-column
+        prop="title"
+        label="分类名称">
+        </el-table-column>
+        <el-table-column
+        prop="createtime"
+        label="创建时间">
+        </el-table-column>
+         <el-table-column
+        prop="display"
+        label="是否显示">
+        </el-table-column>
+         <el-table-column
+        label="操作">
+        <template slot-scope="scope">
+            <el-button type="text" size="small">编辑</el-button>
+            <el-button type="text" size="small">删除</el-button>
+        </template>
+        </el-table-column>
     </el-table>
+     <div style="margin-top: 20px">
+        <el-button @click="toggleSelection()">取消选择</el-button>       
+    </div>
   </div>
 </template>
 
@@ -13,25 +46,33 @@ export default {
     name:"articleclass",
     data() {
         return {
-            tableData: [{
-                date: '2016-05-02',
-                name: '王小虎',
-                address: '上海市普陀区金沙江路 1518 弄'
-            }, {
-                date: '2016-05-04',
-                name: '王小虎',
-                address: '上海市普陀区金沙江路 1517 弄'
-            }, {
-                date: '2016-05-01',
-                name: '王小虎',
-                address: '上海市普陀区金沙江路 1519 弄'
-            }, {
-                date: '2016-05-03',
-                name: '王小虎',
-                address: '上海市普陀区金沙江路 1516 弄'
-            }]
+          tableData: [
+                {
+                    title:'123',
+                    sort:'123',
+                    createtime:'123',
+                    watch:'123',
+                    recommend:'123',
+                    display:'13'
+                }
+            ],
         }
+    },
+    methods: {
+        toggleSelection(rows) {
+        if (rows) {
+          rows.forEach(row => {
+            this.$refs.multipleTable.toggleRowSelection(row);
+          });
+        } else {
+          this.$refs.multipleTable.clearSelection();
+        }
+      },
+      handleSelectionChange(val) {
+        this.multipleSelection = val;
+      },
     }
+
 }
 </script>
 

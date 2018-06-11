@@ -15,7 +15,7 @@
                 <el-dropdown trigger="hover">
                     <span class="el-dropdown-link userinfo-inner">欢迎登陆！{{sysUserName}}</span>
                     <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item>个人信息</el-dropdown-item>
+                        <el-dropdown-item divided @click.native="myinfo">个人信息</el-dropdown-item>
                         <el-dropdown-item divided @click.native="logoutFun">退出登录</el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
@@ -74,9 +74,10 @@ export default {
             }).catch(() => {
 
             });
-
-
         },
+        myinfo:function(){
+           this.$router.push('/info');
+        }
     },
     mounted() {
         var user = sessionStorage.getItem('user');

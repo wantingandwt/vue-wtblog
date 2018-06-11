@@ -144,13 +144,16 @@ export default {
      margin-left:-430px;
      z-index: 4;
      background: #fff;
-     overflow-y: auto;
 }
 .tk-title{
    height:50px;
    line-height: 50px;
    background: #deeafc;
    padding:0 20px;
+}
+.addbody{
+    height: 80%;
+    overflow-y: auto;
 }
 .tk-title h3{
     margin:0;

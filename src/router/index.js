@@ -12,6 +12,8 @@ import articleclass from '@/page/articleclass.vue'
 import system from '@/page/system.vue'
 import banner from '@/page/banner.vue'
 
+import info from '@/page/info.vue'
+
 Vue.use(Router)
 
 export default new Router({
@@ -28,7 +30,7 @@ export default new Router({
 				{
 					path: '/index',
 					component: index,
-					iconCls: 'el-icon-news',
+					iconCls: 'el-icon-menu',
 					name: '系统首页'
 				},
 					{
@@ -54,6 +56,12 @@ export default new Router({
 						component: system,
 						name: '基础信息',
 						iconCls: 'el-icon-setting',
+					},
+					{
+						path: '/info',
+						component: info,
+						name: '个人信息',
+						iconCls: 'el-icon-news',
 					}
 		]
 	}
