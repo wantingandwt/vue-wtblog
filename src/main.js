@@ -5,6 +5,10 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import App from './App'
 import router from './router'
+import utils from './unils/index.js'
+
+//数据格式处理
+Vue.prototype.$utils = utils
 
 Vue.use(router)
 // 引用API文件

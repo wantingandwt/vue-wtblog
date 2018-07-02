@@ -16,7 +16,7 @@
         </el-select>
     </el-form-item>
       <el-form-item label="是否显示">
-        <el-select v-model="formInline.display" placeholder="是否推荐">
+        <el-select v-model="formInline.display" placeholder="是否显示">
         <el-option label="是" value="true"></el-option>
         <el-option label="否" value="false"></el-option>
         </el-select>
@@ -40,29 +40,37 @@
         width="55">
         </el-table-column>
         <el-table-column
-        prop="title"
+        prop="fields.title"
         label="文章名称">
         </el-table-column>
         <el-table-column
-        prop="sort"
         label="所属分类"
         show-overflow-tooltip>
+            <template slot-scope="scope">
+                <span>{{sorts[scope.row.fields.sort-1].fields.name}}</span>
+            </template>
+        </el-table-column>
+         <el-table-column
+            label="创建时间">
+            <template slot-scope="scope">
+                <span> {{$utils.goodTime(scope.row.fields.createtime)}}</span>
+            </template>
         </el-table-column>
         <el-table-column
-        prop="createtime"
-        label="创建时间">
-        </el-table-column>
-        <el-table-column
-        prop="watch"
+        prop="fields.watch"
         label="浏览量">
         </el-table-column>
         <el-table-column
-        prop="recommend"
         label="是否推荐">
+            <template slot-scope="scope">
+                <span> {{$utils.goodrecommend(scope.row.fields.recommend)}}</span>
+            </template>
         </el-table-column>
          <el-table-column
-        prop="display"
         label="是否显示">
+            <template slot-scope="scope">
+                <span> {{$utils.goodrecommend(scope.row.fields.display)}}</span>
+            </template>
         </el-table-column>
          <el-table-column
         label="操作">
@@ -73,6 +81,7 @@
         </template>
         </el-table-column>
     </el-table>
+   
     <div class="article-add" v-show="isShow">
       <articleAdd :isdisplay="isShow" @child="xianshi"></articleAdd>
     </div>
@@ -98,26 +107,28 @@ export default {
                 sort:''
             },
             sorts:[],
-            tableData: [
-                {
-                    title:'0',
-                    sort:'0',
-                    createtime:'0',
-                    watch:'0',
-                    recommend:'0',
-                    display:'0'
-                }
-            ],
+            tableData: [],
             multipleSelection: [],
             isShow:false
       }
     },
     created () {
-         this.getSort();       
+         this.getSort(),   
+         this.getList()
     },
     methods: {
-        onSubmit() {
-        console.log('submit!');
+      onSubmit() {
+        //搜索提交
+        this.$api.get('/get_articles?search_string='+this.formInline.title+'&sort_id='+this.formInline.sort, null, r => {
+            if(r.data.datas=="None"){
+                this.$message({
+                    message: '未搜索到内容',
+                    type: 'warning'
+                });
+            }else{
+                 this.tableData =r.data.datas;
+            }
+        }) 
       },
       //取消选择
        toggleSelection(rows) {
@@ -134,9 +145,16 @@ export default {
         this.multipleSelection = val;
       },
       getSort(){
+        //分类post请求
         this.$api.post('/get_article_sort', null, r => {
              this.sorts =r.data.datas;
         })   
+      },
+      getList(){
+        //列表get请求
+        this.$api.get('/get_articles', null, r => {
+            this.tableData =r.data.datas;
+        })  
       },
       myAdd:function(){
             this.isShow = true

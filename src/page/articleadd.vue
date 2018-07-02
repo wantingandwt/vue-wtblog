@@ -109,9 +109,10 @@ export default {
                         message: '添加文章成功',
                         type: 'success'
                    });
-                   //关闭弹框 
-                   this.isShow = false,
-                   this.$emit('child',this.isShow);
+                   setTimeout(function(){
+                     location.reload()                    
+                   },500)
+                 
                }
         }) 
       },
