@@ -100,12 +100,12 @@ export default {
             sorts:[],
             tableData: [
                 {
-                    title:'123',
-                    sort:'123',
-                    createtime:'123',
-                    watch:'123',
-                    recommend:'123',
-                    display:'13'
+                    title:'0',
+                    sort:'0',
+                    createtime:'0',
+                    watch:'0',
+                    recommend:'0',
+                    display:'0'
                 }
             ],
             multipleSelection: [],
@@ -119,6 +119,7 @@ export default {
         onSubmit() {
         console.log('submit!');
       },
+      //取消选择
        toggleSelection(rows) {
         if (rows) {
           rows.forEach(row => {
@@ -128,6 +129,7 @@ export default {
           this.$refs.multipleTable.clearSelection();
         }
       },
+      //选择的数量
       handleSelectionChange(val) {
         this.multipleSelection = val;
       },

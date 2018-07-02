@@ -8,7 +8,7 @@
             </div>
         </div>
         <div class="addbody">
-           <el-form ref="form" :model="form" label-width="80px">
+           <el-form ref="form" :model="form" label-width="80px" enctype="multipart/form-data">
             <el-form-item label="文章名称">
                 <el-input v-model="form.title"></el-input>
             </el-form-item>
@@ -27,15 +27,20 @@
                 <el-switch v-model="form.display"></el-switch>
             </el-form-item>
              <el-form-item label="文章封面">
-                    <el-upload
-                    class="avatar-uploader"
-                    action=""
-                    :show-file-list="false"
-                    :on-success="handleAvatarSuccess"
-                    :before-upload="beforeAvatarUpload">
-                    <img v-if="form.cover" :src="form.cover" class="avatar">
-                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                    </el-upload>
+                <el-upload
+                    action="/get_upload_file"
+                    list-type="picture-card"
+                    name="upfile"
+                    :on-preview="handlePictureCardPreview"
+                    :on-error="uploadError"
+                    :on-success="handleUploadSuccess"
+                    :on-remove="handleRemove"
+                    accept="image/jpeg,image/gif,image/png,image/bmp">
+                    <i class="el-icon-plus"></i>
+                </el-upload>
+                <el-dialog :visible.sync="dialogVisible">
+                    <img width="100%" :src="dialogImageUrl" alt="">
+                </el-dialog>
             </el-form-item>
             <el-form-item label="文章摘要">
                 <el-input type="textarea" v-model="form.summary"></el-input>
@@ -44,7 +49,7 @@
                 <UE @ready="editorReady" :ueditorConfig="editorConfig"></UE>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" @click="onSubmit">立即创建</el-button>
+                <el-button type="primary" @click="onSubmit">立即提交</el-button>
                 <el-button>取消</el-button>
             </el-form-item>
             </el-form>
@@ -65,11 +70,14 @@ export default {
     },
     data() {
         return {
+            dialogImageUrl: '',
+            dialogVisible: false,
             editorConfig:{
                 retainOnlyLabelPasted: true,
                 initialFrameHeight:400
             },          
             isShow:'',
+            isSuccess:'',
             sorts:[],
             form: {
                 title: '',
@@ -86,7 +94,7 @@ export default {
     created () {
          this.getSort();       
     },
-    methods: {
+    methods: {   
         editorReady(editorInstance){
             editorInstance.setContent('请在这里填写文章内容');
             editorInstance.addListener('contentChange',()=>{
@@ -94,7 +102,18 @@ export default {
             })            
         },
         onSubmit() {
-           console.log('submit');
+            this.$api.post('/do_article',this.form, r => {
+               this.isSuccess = r.data.status;
+               if (this.isSuccess == "true"){
+                   this.$message({
+                        message: '添加文章成功',
+                        type: 'success'
+                   });
+                   //关闭弹框 
+                   this.isShow = false,
+                   this.$emit('child',this.isShow);
+               }
+        }) 
       },
       close:function(){
           this.isShow = false,
@@ -105,19 +124,30 @@ export default {
              this.sorts =r.data.datas;
         })   
       },
-      handleAvatarSuccess(res, file) {
-        this.form.cover = URL.createObjectURL(file.raw);
+
+     // 上传图片
+     handleRemove(file, fileList) {
+        this.$message({
+            message: '封面删除成功',
+            type: 'success'
+        }); 
       },
-      beforeAvatarUpload(file) {
-        const isJPG = file.type === 'image/jpeg';
-        const isLt2M = file.size / 1024 / 1024 < 2;
-        if (!isJPG) {
-          this.$message.error('上传头像图片只能是 JPG 格式!');
-        }
-        if (!isLt2M) {
-          this.$message.error('上传头像图片大小不能超过 2MB!');
-        }
-        return isJPG && isLt2M;
+    uploadError (res, file, fileList) {
+        this.$message({
+            message: '封面上传失败，请重试！',
+            type: 'warning'
+        });
+    },
+      handlePictureCardPreview(file) {
+        this.dialogImageUrl = file.url;
+        this.dialogVisible = true;
+      },
+      handleUploadSuccess(res, file) {
+         this.$message({
+            message: '封面上传成功',
+            type: 'success'
+        }); 
+        this.form.cover =res.filename;
       }
     }
 }
