@@ -2,7 +2,7 @@
 <div class="myarticleadd">
     <div class="addtk">
         <div class="tk-title">
-            <h3>添加文章</h3>
+            <h3>{{isAddc}}</h3>
             <div class="tkclose">
                <i class="el-icon-circle-close-outline" @click="close"></i>
             </div>
@@ -46,7 +46,7 @@
                 <el-input type="textarea" v-model="form.summary"></el-input>
             </el-form-item>
             <el-form-item label="文章内容">
-                <UE @ready="editorReady" :ueditorConfig="editorConfig"></UE>
+                <UE @ready="editorReady" :ueditorConfig="editorConfig">{{form.content}}</UE>
             </el-form-item>
             <el-form-item>
                 <el-button type="primary" @click="onSubmit">立即提交</el-button>
@@ -66,7 +66,8 @@ export default {
         UE
     },
     props:{
-        isdisplay:''
+        isPkc:'',
+        isAddc:''
     },
     data() {
         return {
@@ -76,7 +77,7 @@ export default {
                 retainOnlyLabelPasted: true,
                 initialFrameHeight:400
             },          
-            isShow:'',
+            isShow:'false',
             isSuccess:'',
             sorts:[],
             form: {
@@ -92,7 +93,8 @@ export default {
       }
     },
     created () {
-         this.getSort();       
+        this.getSort(); 
+        this.getEdits();   
     },
     methods: {   
         editorReady(editorInstance){
@@ -102,54 +104,67 @@ export default {
             })            
         },
         onSubmit() {
-            this.$api.post('/do_article',this.form, r => {
-               this.isSuccess = r.data.status;
-               if (this.isSuccess == "true"){
-                   this.$message({
-                        message: '添加文章成功',
-                        type: 'success'
-                   });
-                   setTimeout(function(){
-                     location.reload()                    
-                   },500)
-                 
-               }
-        }) 
-      },
-      close:function(){
-          this.isShow = false,
-          this.$emit('child',this.isShow);
-      },
-      getSort(){
-        this.$api.post('/get_article_sort', null, r => {
-             this.sorts =r.data.datas;
-        })   
-      },
-
-     // 上传图片
-     handleRemove(file, fileList) {
-        this.$message({
-            message: '封面删除成功',
-            type: 'success'
-        }); 
-      },
-    uploadError (res, file, fileList) {
-        this.$message({
-            message: '封面上传失败，请重试！',
-            type: 'warning'
-        });
-    },
-      handlePictureCardPreview(file) {
-        this.dialogImageUrl = file.url;
-        this.dialogVisible = true;
-      },
-      handleUploadSuccess(res, file) {
-         this.$message({
-            message: '封面上传成功',
-            type: 'success'
-        }); 
-        this.form.cover =res.filename;
-      }
+                this.$api.post('/do_article',this.form, r => {
+                this.isSuccess = r.data.status;
+                if (this.isSuccess == "true"){
+                    this.$message({
+                            message: '添加文章成功',
+                            type: 'success'
+                    });
+                    setTimeout(function(){
+                        location.reload()                    
+                    },500)                   
+                }
+            }) 
+        },
+        close:function(){
+            this.isShow = false,
+            this.$emit('child',this.isShow);
+        },
+        getSort(){
+            this.$api.post('/get_article_sort', null, r => {
+                this.sorts =r.data.datas;
+            })   
+        },
+        getEdits(){
+            if(this.isAddc=='编辑文章'){
+                this.$api.get('/get_articles?aid='+this.isPkc, null, r => {
+                    console.log(r.data.datas);
+                    this.form.title= r.data.datas.fields.title;
+                    this.form.sort= r.data.datas.fields.sort;
+                    this.form.author= r.data.datas.fields.author;
+                    this.form.recommend= r.data.datas.fields.recommend;
+                    this.form.display= r.data.datas.fields.display;
+                    this.form.cover= r.data.datas.fields.cover;
+                    this.form.summary= r.data.datas.fields.summary;
+                    this.form.content= r.data.datas.fields.content;
+                }) 
+            }  
+        },
+        // 上传图片
+        handleRemove(file, fileList) {
+            this.$message({
+                message: '封面删除成功',
+                type: 'success'
+            }); 
+        },
+        uploadError (res, file, fileList) {
+            this.$message({
+                message: '封面上传失败，请重试！',
+                type: 'warning'
+            });
+        },
+        handlePictureCardPreview(file) {
+            this.dialogImageUrl = file.url;
+            this.dialogVisible = true;
+        },
+        handleUploadSuccess(res, file) {
+            this.$message({
+                message: '封面上传成功',
+                type: 'success'
+            }); 
+            this.form.cover =res.filename;
+        }
     }
 }
 </script>

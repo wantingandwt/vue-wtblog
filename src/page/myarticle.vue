@@ -24,8 +24,7 @@
     <el-form-item>
         <el-button type="primary" @click="onSubmit">查询</el-button>
     </el-form-item>
-    <el-button type="primary" @click="myAdd()">新增文章</el-button>
-    <el-button type="info">删除文章</el-button>
+    <el-button type="primary" @click="myAdd('新增文章')">新增文章</el-button>
     </el-form>
     <template>
     <el-table
@@ -33,12 +32,7 @@
         :data="tableData"
         tooltip-effect="dark"
         stripe
-        style="width: 100%"
-        @selection-change="handleSelectionChange">
-        <el-table-column
-        type="selection"
-        width="55">
-        </el-table-column>
+        style="width: 100%">
         <el-table-column
         prop="fields.title"
         label="文章名称">
@@ -75,18 +69,15 @@
          <el-table-column
         label="操作">
         <template slot-scope="scope">
-            <el-button type="text" size="small">查看</el-button>
-            <el-button type="text" size="small">编辑</el-button>
-            <el-button type="text" size="small">删除</el-button>
+            <el-button type="text" size="small" @click="myEye(scope.row.pk)">查看</el-button>
+            <el-button type="text" size="small" @click="myEdit('编辑文章',scope.row.pk)">编辑</el-button>
+            <el-button type="text" size="small" @click="myDel(scope.row.pk)">删除</el-button>
         </template>
         </el-table-column>
     </el-table>
    
     <div class="article-add" v-show="isShow">
-      <articleAdd :isdisplay="isShow" @child="xianshi"></articleAdd>
-    </div>
-    <div style="margin-top: 20px">
-        <el-button @click="toggleSelection()">取消选择</el-button>       
+      <articleAdd  :isAddc="isAdd" :isPkc="isPk" @child="xianshi"></articleAdd>
     </div>
     </template>
 </div>
@@ -109,7 +100,9 @@ export default {
             sorts:[],
             tableData: [],
             multipleSelection: [],
-            isShow:false
+            isShow:false,
+            isAdd:'',
+            isPk:''
       }
     },
     created () {
@@ -130,20 +123,6 @@ export default {
             }
         }) 
       },
-      //取消选择
-       toggleSelection(rows) {
-        if (rows) {
-          rows.forEach(row => {
-            this.$refs.multipleTable.toggleRowSelection(row);
-          });
-        } else {
-          this.$refs.multipleTable.clearSelection();
-        }
-      },
-      //选择的数量
-      handleSelectionChange(val) {
-        this.multipleSelection = val;
-      },
       getSort(){
         //分类post请求
         this.$api.post('/get_article_sort', null, r => {
@@ -156,8 +135,34 @@ export default {
             this.tableData =r.data.datas;
         })  
       },
-      myAdd:function(){
+      //新增文章弹框
+      myAdd:function(data){
+            this.isAdd = data;
             this.isShow = true
+      },
+       //编辑文章弹框
+      myEdit:function(data,pk){
+            this.isAdd = data;
+            this.isAdd = data;
+            this.isShow = true
+      },
+       //删除单个文章
+      myDel:function(pk){
+       this.$api.get('/del_article?aid='+pk, null, r => {
+            if (r.data.status == "true"){
+                this.$message({
+                        message: '删除文章成功',
+                        type: 'success'
+                });                   
+            }
+             setTimeout(function(){
+                location.reload()                    
+            },500)  
+        })  
+      },
+      //查看文章
+      myEye:function(pk){
+         
       },
       //接收子组件传递的值
       xianshi:function(q){

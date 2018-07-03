@@ -2,15 +2,13 @@
   <div class="table-content">
     <el-form>
         <el-button type="primary" >新增分类</el-button>
-        <el-button type="info">删除分类</el-button>
     </el-form>
      <el-table
         ref="multipleTable"
         :data="tableData"
         tooltip-effect="dark"
         stripe
-        style="width: 100%"
-        @selection-change="handleSelectionChange">
+        style="width: 100%">
         <el-table-column
         type="selection"
         width="55">
@@ -31,13 +29,9 @@
         label="操作">
         <template slot-scope="scope">
             <el-button type="text" size="small">编辑</el-button>
-            <el-button type="text" size="small">删除</el-button>
         </template>
         </el-table-column>
     </el-table>
-     <div style="margin-top: 20px">
-        <el-button @click="toggleSelection()">取消选择</el-button>       
-    </div>
   </div>
 </template>
 
@@ -46,31 +40,19 @@ export default {
     name:"articleclass",
     data() {
         return {
-          tableData: [
-                {
-                    title:'123',
-                    sort:'123',
-                    createtime:'123',
-                    watch:'123',
-                    recommend:'123',
-                    display:'13'
-                }
-            ],
+          tableData: [],
         }
     },
+    created () { 
+         this.getList()
+    },
     methods: {
-        toggleSelection(rows) {
-        if (rows) {
-          rows.forEach(row => {
-            this.$refs.multipleTable.toggleRowSelection(row);
-          });
-        } else {
-          this.$refs.multipleTable.clearSelection();
-        }
-      },
-      handleSelectionChange(val) {
-        this.multipleSelection = val;
-      },
+        getList(){
+            //列表get请求
+            this.$api.get('/get_article_sort', null, r => {
+                this.tableData =r.data.datas;
+            })  
+        },
     }
 
 }
