@@ -9,49 +9,50 @@
         </div>
         <div class="addbody">
            <el-form ref="form" :model="form" label-width="80px" enctype="multipart/form-data">
-            <el-form-item label="文章名称">
-                <el-input v-model="form.title"></el-input>
-            </el-form-item>
-            <el-form-item label="所属分类">
-               <el-select v-model="form.sort" placeholder="所属分类">
-                    <el-option v-for="item in sorts" :key="item.pk" :label="item.fields.name" :value="item.pk"></el-option>
-                </el-select>
-            </el-form-item>
-             <el-form-item label="文章作者">
-                <el-input v-model="form.author"></el-input>
-            </el-form-item>
-            <el-form-item label="是否推荐">
-                <el-switch v-model="form.recommend"></el-switch>
-            </el-form-item>
-             <el-form-item label="是否显示">
-                <el-switch v-model="form.display"></el-switch>
-            </el-form-item>
-             <el-form-item label="文章封面">
-                <el-upload
-                    action="/get_upload_file"
-                    list-type="picture-card"
-                    name="upfile"
-                    :on-preview="handlePictureCardPreview"
-                    :on-error="uploadError"
-                    :on-success="handleUploadSuccess"
-                    :on-remove="handleRemove"
-                    accept="image/jpeg,image/gif,image/png,image/bmp">
-                    <i class="el-icon-plus"></i>
-                </el-upload>
-                <el-dialog :visible.sync="dialogVisible">
-                    <img width="100%" :src="dialogImageUrl" alt="">
-                </el-dialog>
-            </el-form-item>
-            <el-form-item label="文章摘要">
-                <el-input type="textarea" v-model="form.summary"></el-input>
-            </el-form-item>
-            <el-form-item label="文章内容">
-                <UE @ready="editorReady" :ueditorConfig="editorConfig">{{form.content}}</UE>
-            </el-form-item>
-            <el-form-item>
-                <el-button type="primary" @click="onSubmit">立即提交</el-button>
-                <el-button>取消</el-button>
-            </el-form-item>
+                <el-form-item label="文章名称">
+                    <el-input v-model="form.title"></el-input>
+                </el-form-item>
+                <el-form-item label="所属分类">
+                <el-select v-model="form.sort" placeholder="所属分类">
+                        <el-option v-for="item in sorts" :key="item.pk" :label="item.fields.name" :value="item.pk"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="文章作者">
+                    <el-input v-model="form.author"></el-input>
+                </el-form-item>
+                <el-form-item label="是否推荐">
+                    <el-switch v-model="form.recommend"></el-switch>
+                </el-form-item>
+                <el-form-item label="是否显示">
+                    <el-switch v-model="form.display"></el-switch>
+                </el-form-item>
+                <el-form-item label="文章封面">
+                    <el-upload
+                        action="/get_upload_file"
+                        list-type="picture-card"
+                        name="upfile"
+                        :file-list="img_list"
+                        :on-preview="handlePictureCardPreview"
+                        :on-error="uploadError"
+                        :on-success="handleUploadSuccess"
+                        :on-remove="handleRemove"
+                        accept="image/jpeg,image/gif,image/png,image/bmp">
+                        <i class="el-icon-plus"></i>
+                    </el-upload>
+                    <el-dialog :visible.sync="dialogVisible">
+                        <img width="100%" :src="dialogImageUrl" alt="">
+                    </el-dialog>
+                </el-form-item>
+                <el-form-item label="文章摘要">
+                    <el-input type="textarea" v-model="form.summary"></el-input>
+                </el-form-item>
+                <el-form-item label="文章内容">
+                    <UE @ready="editorReady" :ueditorConfig="editorConfig"></UE>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" @click="onSubmit">立即提交</el-button>
+                    <el-button>取消</el-button>
+                </el-form-item>
             </el-form>
         </div>
     </div>
@@ -66,39 +67,67 @@ export default {
         UE
     },
     props:{
-        isPkc:'',
+        formeditc:Object,
+        pkc:'',
         isAddc:''
     },
     data() {
         return {
+            img_list:[],
+            img_list2:[{
+                url:''
+            }],
             dialogImageUrl: '',
             dialogVisible: false,
             editorConfig:{
                 retainOnlyLabelPasted: true,
                 initialFrameHeight:400
-            },          
-            isShow:'false',
+            },        
+            isShow:'',
             isSuccess:'',
             sorts:[],
-            form: {
-                title: '',
-                author:'',
-                cover:'',
-                sort: '',
-                recommend: false,
-                display:true,
-                summary: '',
-                content:''
-            }
+            form: {}
       }
+    },
+    mounted(){
+        this.form = this.formeditc;
+        this.getform(this.form.recommend); 
+        this.getform2(this.form.display);     
+    },
+    watch:{//监听当值改变时
+        formeditc(newVal, oldVal){
+           this.form = newVal;
+           this.getform(this.form.recommend);//转唤是否推荐
+           this.getform2(this.form.display);//转唤是否显示
+           this.allimg(this.form.cover); //转换封面
+        },
     },
     created () {
         this.getSort(); 
-        this.getEdits();   
     },
-    methods: {   
+    methods: {  
+        allimg(str){
+           if(str != ''){
+               this.img_list2[0].url = str;
+               this.img_list=this.img_list2
+           }
+        },
+        getform(str){
+           if(str==1){
+              this.form.recommend = true
+           }else{
+              this.form.recommend =  false
+           }
+        },
+        getform2(str){
+           if(str==1){
+              this.form.display = true
+           }else{
+              this.form.display = false
+           }
+        },
         editorReady(editorInstance){
-            editorInstance.setContent('请在这里填写文章内容');
+            editorInstance.setContent(this.form.content);
             editorInstance.addListener('contentChange',()=>{
                this.form.content = editorInstance.getContent()//获取编辑器内容
             })            
@@ -125,21 +154,6 @@ export default {
             this.$api.post('/get_article_sort', null, r => {
                 this.sorts =r.data.datas;
             })   
-        },
-        getEdits(){
-            if(this.isAddc=='编辑文章'){
-                this.$api.get('/get_articles?aid='+this.isPkc, null, r => {
-                    console.log(r.data.datas);
-                    this.form.title= r.data.datas.fields.title;
-                    this.form.sort= r.data.datas.fields.sort;
-                    this.form.author= r.data.datas.fields.author;
-                    this.form.recommend= r.data.datas.fields.recommend;
-                    this.form.display= r.data.datas.fields.display;
-                    this.form.cover= r.data.datas.fields.cover;
-                    this.form.summary= r.data.datas.fields.summary;
-                    this.form.content= r.data.datas.fields.content;
-                }) 
-            }  
         },
         // 上传图片
         handleRemove(file, fileList) {

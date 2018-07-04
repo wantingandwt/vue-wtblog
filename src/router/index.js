@@ -4,7 +4,7 @@ import login from '@/page/login'
 import home from '@/page/home.vue'
 
 import myarticle from '@/page/myarticle.vue'
-import articleadd from '@/page/articleadd.vue'
+import articleeye from '@/page/articleeye'
 import index from '@/page/index.vue'
 
 import articleclass from '@/page/articleclass.vue'
@@ -13,6 +13,7 @@ import system from '@/page/system.vue'
 import banner from '@/page/banner.vue'
 
 import info from '@/page/info.vue'
+
 
 Vue.use(Router)
 
@@ -63,7 +64,12 @@ export default new Router({
 						name: '个人信息',
 						iconCls: 'el-icon-news',
 					}
-		]
-	}
+			]
+		},
+		{
+			path: '/articleeye/:id',
+			component: articleeye,
+			name: '文章详情页'
+		}
   ]
 })

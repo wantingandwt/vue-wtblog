@@ -2,10 +2,13 @@ body {
     margin: 0;
     padding: 0;
     font-size: 14px;
+    color:#333;
     -webkit-font-smoothing: antialiased;
     overflow: scroll;
-    overflow-y: hidden;
     font-family: "microsoft yahei", Tahoma, Arial, Helvetica,Sans-serif;
+}
+.container{
+    min-width:1000px;
 }
 a,a:hover{
     text-decoration: none;

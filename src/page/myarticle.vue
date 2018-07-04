@@ -1,38 +1,38 @@
 <template>
 <div class="myarticle">
     <el-form :inline="true" :model="formInline" class="demo-form-inline">
-    <el-form-item label="文章名称">
-        <el-input v-model="formInline.title" placeholder="文章名称"></el-input>
-    </el-form-item>
-    <el-form-item label="所属分类">
-        <el-select v-model="formInline.sort" placeholder="所属分类">
-            <el-option v-for="item in sorts" :key="item.pk" :label="item.fields.name" :value="item.pk"></el-option>
-        </el-select>
-    </el-form-item>
-    <el-form-item label="是否推荐">
-        <el-select v-model="formInline.recommend" placeholder="是否推荐">
-        <el-option label="是" value="true"></el-option>
-        <el-option label="否" value="false"></el-option>
-        </el-select>
-    </el-form-item>
-      <el-form-item label="是否显示">
-        <el-select v-model="formInline.display" placeholder="是否显示">
-        <el-option label="是" value="true"></el-option>
-        <el-option label="否" value="false"></el-option>
-        </el-select>
-    </el-form-item>
-    <el-form-item>
-        <el-button type="primary" @click="onSubmit">查询</el-button>
-    </el-form-item>
-    <el-button type="primary" @click="myAdd('新增文章')">新增文章</el-button>
+        <el-form-item label="文章名称">
+            <el-input v-model="formInline.title" placeholder="文章名称"></el-input>
+        </el-form-item>
+        <el-form-item label="所属分类">
+            <el-select v-model="formInline.sort" placeholder="所属分类">
+                <el-option v-for="item in sorts" :key="item.pk" :label="item.fields.name" :value="item.pk"></el-option>
+            </el-select>
+        </el-form-item>
+        <el-form-item label="是否推荐">
+            <el-select v-model="formInline.recommend" placeholder="是否推荐">
+            <el-option label="是" value="true"></el-option>
+            <el-option label="否" value="false"></el-option>
+            </el-select>
+        </el-form-item>
+        <el-form-item label="是否显示">
+            <el-select v-model="formInline.display" placeholder="是否显示">
+            <el-option label="是" value="true"></el-option>
+            <el-option label="否" value="false"></el-option>
+            </el-select>
+        </el-form-item>
+        <el-form-item>
+            <el-button type="primary" @click="onSubmit">查询</el-button>
+        </el-form-item>
+        <el-button type="primary" @click="myAdd('新增文章')">新增文章</el-button>
     </el-form>
     <template>
     <el-table
-        ref="multipleTable"
-        :data="tableData"
-        tooltip-effect="dark"
-        stripe
-        style="width: 100%">
+    ref="multipleTable"
+    :data="tableData"
+    tooltip-effect="dark"
+    stripe
+    style="width: 100%">
         <el-table-column
         prop="fields.title"
         label="文章名称">
@@ -75,9 +75,8 @@
         </template>
         </el-table-column>
     </el-table>
-   
-    <div class="article-add" v-show="isShow">
-      <articleAdd  :isAddc="isAdd" :isPkc="isPk" @child="xianshi"></articleAdd>
+    <div class="article-add" v-if="isShow">
+      <articleAdd :formeditc="formedit" :pkc="pk" :isAddc="isAdd" @child="xianshi"></articleAdd>
     </div>
     </template>
 </div>
@@ -93,16 +92,25 @@ export default {
         return {
             formInline: {
                 title: '',
-                recommend:'',
-                display:'',
                 sort:''
+            },
+            form: {//新增文章默认值
+                title: '',
+                author:'',
+                pk:'',
+                cover:'',
+                sort: '',
+                recommend: 1,
+                display:2,
+                summary: '',
+                content:'请在这里输入内容'
             },
             sorts:[],
             tableData: [],
+            formedit:{},
             multipleSelection: [],
             isShow:false,
             isAdd:'',
-            isPk:''
       }
     },
     created () {
@@ -138,13 +146,18 @@ export default {
       //新增文章弹框
       myAdd:function(data){
             this.isAdd = data;
-            this.isShow = true
+            this.pk = '';
+            this.isShow = true;
+            this.formedit = this.form
       },
        //编辑文章弹框
       myEdit:function(data,pk){
+             this.$api.get('/get_articles?aid='+pk, null, r => {
+                this.formedit= r.data.datas[0].fields;
+            }) 
             this.isAdd = data;
-            this.isAdd = data;
-            this.isShow = true
+            this.pk = pk;
+            this.isShow = true         
       },
        //删除单个文章
       myDel:function(pk){
@@ -162,7 +175,7 @@ export default {
       },
       //查看文章
       myEye:function(pk){
-         
+           this.$router.push({ path: '/articleeye/'+pk });
       },
       //接收子组件传递的值
       xianshi:function(q){
