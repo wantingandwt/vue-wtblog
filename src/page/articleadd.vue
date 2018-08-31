@@ -86,26 +86,40 @@ export default {
             isShow:'',
             isSuccess:'',
             sorts:[],
-            form: {}
+            form: {},
+            id:{
+                aid:''
+            },
+            allform:{}
       }
     },
     mounted(){
-        this.form = this.formeditc;
-        this.getform(this.form.recommend); 
-        this.getform2(this.form.display);     
+        this.form = this.formeditc
+        this.getform(this.form.recommend) 
+        this.getform2(this.form.display)   
+        this.id.aid = this.pkc
+        this.allForm()
     },
     watch:{//监听当值改变时
         formeditc(newVal, oldVal){
            this.form = newVal;
-           this.getform(this.form.recommend);//转唤是否推荐
-           this.getform2(this.form.display);//转唤是否显示
-           this.allimg(this.form.cover); //转换封面
+           this.getform(this.form.recommend)//转唤是否推荐
+           this.getform2(this.form.display)//转唤是否显示
+           this.allimg(this.form.cover) //转换封面
+           this.allForm()
         },
+        pkc(newVal, oldVal){
+           this.id.aid = newVal 
+           this.allForm()
+        }
     },
     created () {
         this.getSort(); 
     },
-    methods: {  
+    methods: {
+        allForm(){
+            this.allform =Object.assign(this.id, this.form);//将2个对象合并成一个
+        },  
         allimg(str){
            if(str != ''){
                this.img_list2[0].url = str;
@@ -133,16 +147,21 @@ export default {
             })            
         },
         onSubmit() {
-                this.$api.post('/do_article',this.form, r => {
+            this.$api.post('/do_article',this.allform, r => {
                 this.isSuccess = r.data.status;
                 if (this.isSuccess == "true"){
                     this.$message({
-                            message: '添加文章成功',
+                            message: '添加/修改文章成功',
                             type: 'success'
                     });
                     setTimeout(function(){
                         location.reload()                    
                     },500)                   
+                }else{
+                    this.$message({
+                            message: '添加/修改文章失败，请重新添加',
+                            type: 'warning'
+                    });
                 }
             }) 
         },
