@@ -1,6 +1,4 @@
 <template>
-<div class="container">
-    <myHeader></myHeader>
     <div class="details">
         <div class="details-left">
             <h1 class="details-title">{{ details.title }}</h1>
@@ -13,26 +11,25 @@
                 <h3>推荐文章</h3>
                 <li>
                     <router-link :to="'/articleeye/'+id">
-                        <img :src="details.cover">
+                       <div class="src-img">{{details.cover}}</div>
                         <p>{{ details.title }}</p>
                     </router-link>
                 </li>
                 <li>
                     <router-link :to="'/articleeye/'+id">
-                        <img :src="details.cover">
+                        <div class="src-img">{{details.cover}}</div>
                         <p>{{ details.title }}</p>
                     </router-link>
                 </li>
                 <li>
                     <router-link :to="'/articleeye/'+id">
-                        <img :src="details.cover">
+                        <div class="src-img">{{details.cover}}</div>
                         <p>{{ details.title }}</p>
                     </router-link>
                 </li>
             </ul>
         </div>
     </div>
-</div>
 </template>
 <script>
 import myHeader from '../components/header'
@@ -51,8 +48,9 @@ created () {
 },
 methods: {
     getData () {
-        this.$api.get('/get_articles?aid=' + this.id, null, r => {
-            this.details = r.data.datas[0].fields;
+        this.$api.get('/get_articles','')
+        .then( r => {
+            this.details = r.data[this.id-1];
         })
     }
 }
@@ -60,7 +58,7 @@ methods: {
 </script>
 <style scope lang="css">
 .details{
-    width:80%;
+    width:100%;
     font-size:0;
     margin:20px auto;
     overflow-y: auto;
@@ -126,5 +124,14 @@ methods: {
 }
 .details-content{
     margin-top:30px;
+}
+.src-img{
+    width:100%;
+    height:100px;
+    background:#377ef1;
+    color:#fff;
+    text-align: center;
+    line-height: 100px;
+    font-size:16px;
 }
  </style>

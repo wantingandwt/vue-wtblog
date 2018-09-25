@@ -41,11 +41,16 @@
   },
 	 methods: {
      submitForm(formName) {
-        this.$refs[formName].validate((valid) => {
+      this.$refs[formName].validate((valid) => {
           if (valid) {   
-            this.$api.post('/login',this.ruleForm, r => {
-               this.logining = r.data.status;
-              if (this.logining == "true"){
+            this.$api.post('/login',{
+              params: {
+                obj:this.ruleForm // 选择FormData方式传参
+                }  
+            })
+            .then(r => {
+              this.logining = r.data.status;
+              if (this.logining == true){
                 sessionStorage.setItem('user', JSON.stringify(this.ruleForm));//存储在web
                 this.$message({
                     message: '登录成功',
@@ -58,8 +63,8 @@
                   type: 'warning'
                 });
               }
-            })                            
-          } else {
+          })                            
+        } else {
             console.log('error submit!!');
             return false;
           }

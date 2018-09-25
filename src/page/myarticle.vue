@@ -6,7 +6,7 @@
         </el-form-item>
         <el-form-item label="所属分类">
             <el-select v-model="formInline.sort" placeholder="所属分类">
-                <el-option v-for="item in sorts" :key="item.pk" :label="item.fields.name" :value="item.pk"></el-option>
+                <el-option v-for="item in sorts" :key="item.id" :label="item.name" :value="item.id"></el-option>
             </el-select>
         </el-form-item>
         <el-form-item label="是否推荐">
@@ -34,44 +34,48 @@
     stripe
     style="width: 100%">
         <el-table-column
-        prop="fields.title"
-        label="文章名称">
+        prop="title"
+        label="文章名称"
+        width="500px">
         </el-table-column>
         <el-table-column
         label="所属分类"
         show-overflow-tooltip>
             <template slot-scope="scope">
-                <span>{{sorts[scope.row.fields.sort-1].fields.name}}</span>
+                <span>{{scope.row.name}}</span>
             </template>
         </el-table-column>
          <el-table-column
             label="创建时间">
             <template slot-scope="scope">
-                <span> {{$utils.goodTime(scope.row.fields.createtime)}}</span>
+                <span> {{$utils.goodTime(scope.row.createtime)}}</span>
             </template>
         </el-table-column>
         <el-table-column
-        prop="fields.watch"
-        label="浏览量">
+        prop="watch"
+        label="浏览量"
+        width="100px">
         </el-table-column>
         <el-table-column
-        label="是否推荐">
+        label="是否推荐"
+        width="100px">
             <template slot-scope="scope">
-                <span> {{$utils.goodrecommend(scope.row.fields.recommend)}}</span>
+                <span> {{$utils.goodrecommend(scope.row.recommend)}}</span>
             </template>
         </el-table-column>
          <el-table-column
-        label="是否显示">
+        label="是否显示"
+        width="100px">
             <template slot-scope="scope">
-                <span> {{$utils.goodrecommend(scope.row.fields.display)}}</span>
+                <span> {{$utils.goodrecommend(scope.row.display)}}</span>
             </template>
         </el-table-column>
          <el-table-column
         label="操作">
         <template slot-scope="scope">
-            <el-button type="text" size="small" @click="myEye(scope.row.pk)">查看</el-button>
-            <el-button type="text" size="small" @click="myEdit('编辑文章',scope.row.pk)">编辑</el-button>
-            <el-button type="text" size="small" @click="myDel(scope.row.pk)">删除</el-button>
+            <el-button type="text" size="small" @click="myEye(scope.row.id)">查看</el-button>
+            <el-button type="text" size="small" @click="myEdit('编辑文章',scope.row.id)">编辑</el-button>
+            <el-button type="text" size="small" @click="myDel(scope.row.id)">删除</el-button>
         </template>
         </el-table-column>
     </el-table>
@@ -120,28 +124,31 @@ export default {
     methods: {
       onSubmit() {
         //搜索提交
-        this.$api.get('/get_articles?search_string='+this.formInline.title+'&sort_id='+this.formInline.sort, null, r => {
-            if(r.data.datas=="None"){
-                this.$message({
-                    message: '未搜索到内容',
-                    type: 'warning'
-                });
-            }else{
-                 this.tableData =r.data.datas;
-            }
-        }) 
+        // this.$api.get('/get_articles?search_string='+this.formInline.title+'&sort_id='+this.formInline.sort, null, r => {
+        //     if(r.data.datas=="None"){
+        //         this.$message({
+        //             message: '未搜索到内容',
+        //             type: 'warning'
+        //         });
+        //     }else{
+        //          this.tableData =r.data.datas;
+        //     }
+        // }) 
       },
       getSort(){
         //分类post请求
-        this.$api.post('/get_article_sort', null, r => {
-             this.sorts =r.data.datas;
+        this.$api.post('/get_article_sort','')
+        .then(r => {
+             this.sorts =r.data;
         })   
       },
       getList(){
         //列表get请求
-        this.$api.get('/get_articles', null, r => {
-            this.tableData =r.data.datas;
-        })  
+        this.$api.get('/get_articles', '')
+        .then(r => {
+           // console.log(r.data);
+            this.tableData =r.data;
+        })   
       },
       //新增文章弹框
       myAdd:function(data){
@@ -152,25 +159,24 @@ export default {
       },
        //编辑文章弹框
       myEdit:function(data,pk){
-             this.$api.get('/get_articles?aid='+pk, null, r => {
-                this.formedit= r.data.datas[0].fields;
-            }) 
+            this.formedit= this.tableData[pk-1];
             this.isAdd = data;
             this.pk = pk;
             this.isShow = true         
       },
        //删除单个文章
       myDel:function(pk){
-       this.$api.get('/del_article?aid='+pk, null, r => {
-            if (r.data.status == "true"){
-                this.$message({
-                        message: '删除文章成功',
-                        type: 'success'
-                });                   
-            }
-             setTimeout(function(){
-                location.reload()                    
-            },500)  
+       this.$api.post('/get_articles',{
+           params:{
+               id:pk
+           }
+       })
+       .then(r => {
+            this.tableData =r.data;
+            this.$message({
+                    message: '删除文章成功',
+                    type: 'success'
+            });                   
         })  
       },
       //查看文章

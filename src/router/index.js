@@ -63,13 +63,13 @@ export default new Router({
 						component: info,
 						name: '个人信息',
 						iconCls: 'el-icon-news',
+					},
+					{
+						path: '/articleeye/:id',
+						component: articleeye,
+						name: '文章详情页'
 					}
 			]
-		},
-		{
-			path: '/articleeye/:id',
-			component: articleeye,
-			name: '文章详情页'
 		}
   ]
 })

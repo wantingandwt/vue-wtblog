@@ -6,7 +6,7 @@
         <aside>
             <ul class="el-menu home-nav">
                 <template v-for="(item,index) in $router.options.routes">
-                    <li class="el-submenu" v-for="child in item.children">
+                    <li class="el-submenu" v-for="(child,pk) in item.children" v-show="pk!==6">
                         <router-link :to="child.path" exact>
                             <i :class="child.iconCls"></i>
                             <span>{{child.name}}</span>

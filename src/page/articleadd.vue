@@ -14,7 +14,7 @@
                 </el-form-item>
                 <el-form-item label="所属分类">
                 <el-select v-model="form.sort" placeholder="所属分类">
-                        <el-option v-for="item in sorts" :key="item.pk" :label="item.fields.name" :value="item.pk"></el-option>
+                        <el-option v-for="item in sorts" :key="item.id" :label="item.name" :value="item.id"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="文章作者">
@@ -170,9 +170,11 @@ export default {
             this.$emit('child',this.isShow);
         },
         getSort(){
-            this.$api.post('/get_article_sort', null, r => {
-                this.sorts =r.data.datas;
-            })   
+            this.$api.get('/get_articles', '')
+            .then(r => {
+            // console.log(r.data);
+                this.tableData =r.data;
+            })  
         },
         // 上传图片
         handleRemove(file, fileList) {

@@ -10,7 +10,11 @@ import utils from './unils/index.js'
 //数据格式处理
 Vue.prototype.$utils = utils
 
+// 引入mockjs
+require('./mock.js')
+
 Vue.use(router)
+
 // 引用API文件
 import api from './api/index.js'
 // 将API方法绑定到全局

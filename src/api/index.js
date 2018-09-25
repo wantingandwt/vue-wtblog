@@ -1,83 +1,50 @@
-import qs from 'qs'
-// 配置API接口地址
-var root = '/'
-// 引用axios
-var axios = require('axios')
-// 自定义判断元素类型JS
-function toType (obj) {
-  return ({}).toString.call(obj).match(/\s([a-zA-Z]+)/)[1].toLowerCase()
-}
-// 参数过滤函数
-function filterNull (o) {
-  for (var key in o) {
-    if (o[key] === null) {
-      delete o[key]
-    }
-    if (toType(o[key]) === 'string') {
-      o[key] = o[key].trim()
-    } else if (toType(o[key]) === 'object') {
-      o[key] = filterNull(o[key])
-    } else if (toType(o[key]) === 'array') {
-      o[key] = filterNull(o[key])
-    }
-  }
-  return o
-}
-/*
-  接口处理函数
-*/
-
-function apiAxios (method, url, params, success, failure) {
-  if (params) {
-    params = filterNull(params)
-  }
-  if(method === 'POST'){
-    params =qs.stringify(params);
-  }
-  axios({
-    method: method,
-    url: url,
-    data: method === 'POST' || method === 'PUT' ? params : null,
-    params: method === 'GET' || method === 'DELETE' ? params : null,
-    baseURL: root,
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
-    },
-    withCredentials: false
+import axios from 'axios'
+import vue from 'vue'
+ 
+axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
+ 
+// 请求拦截器
+axios.interceptors.request.use(function(config) {
+    return config;
+  }, function(error) {
+    return Promise.reject(error);
   })
-  .then(function (res) {
-    if (res.data.success === "true") {
-      if (success) {        
-          success(res.data)
-      }
-    } else {
-      if (failure) {
-        failure(res.data)
-      } else {
-        window.alert('error: ' + JSON.stringify(res.data))
-      }
-    }
-  })
-  .catch(function (err) {
-    let res = err.response
-    if (err) {
-      //window.alert('api error, HTTP CODE: ' + res.status)
-    }
+  // 响应拦截器
+axios.interceptors.response.use(function(response) {
+  return response;
+}, function(error) {
+  return Promise.reject(error);
+})
+ 
+// 封装axios的post请求
+export function fetch(method,url, params) {
+  return new Promise((resolve, reject) => {
+    axios({
+      method: method,
+      url: url,
+      data: method === 'POST' || method === 'PUT' ? params : null,
+      params: method === 'GET' || method === 'DELETE' ? params : null
+    })
+    .then(response => {
+        resolve(response.data);
+    })
+    .catch((error) => {
+        reject(error);
+    })
   })
 }
-
-// 返回在vue模板中的调用接口
+ 
 export default {
-  get: function (url, params, success, failure) {
-    return apiAxios('GET', url, params, success, failure)
+  post:function(url, params) {
+    return fetch('POST',url, params);
   },
-  post: function (url, params, success, failure) {
-    return apiAxios('POST', url, params, success, failure)
+  get:function(url, params) {
+    return fetch('GET',url, params);
   },
-  put: function (url, params, success, failure) {
-    return apiAxios('PUT', url, params, success, failure)
+  put:function(url, params) {
+    return fetch('PUT',url, params);
   },
-  delete: function (url, params, success, failure) {
-    return apiAxios('DELETE', url, params, success, failure)
-  }
+  delete:function(url, params) {
+    return fetch('DELETE',url, params);
+  },
 }
